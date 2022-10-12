@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import GetData from "../../utilities/services";
+import React, { useEffect, useState } from "react";
+// import GetData from "../../utilities/services";
 import Pagination from "../Pagination/Pagination";
+import axios from "axios";
 import "./Users.css";
 
 function Users() {
@@ -8,34 +9,24 @@ function Users() {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(20);
 
-  const imageRef = useRef();
-
   useEffect(() => {
-    GetData().then((response) => setData(response.data));
+    getData()
   }, []);
-
-  useEffect(() => {
-    const setSpans = () => {
-      console.log(imageRef.current.clientHeight);
-    };
-    const imgref = imageRef.current;
-    imgref
-      ? imgref.addEventListener("click", setSpans)
-      : console.log("no data");
-  });
+  const getData =() =>{
+      axios.get(`https://picsum.photos/v2/list`)
+      .then((response)=>{
+        const allData= response.data
+        console.log(allData)
+        setData(allData)
+      })}
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
   const currentPosts = data.slice(firstPostIndex, lastPostIndex);
   const images =
     data &&
     currentPosts.map(({ id, author, width, height, download_url }, index) => (
-      <div className="pics">
-        <img
-          src={download_url}
-          style={{ width: "100%" }}
-          ref={imageRef}
-          alt="user"
-        ></img>
+      <div className="pics" key ={id}>
+        <img src={download_url} style={{ width: "100%" , height: id==='1009' ? '300px':'' }} alt="user"></img>
       </div>
     ));
   return (

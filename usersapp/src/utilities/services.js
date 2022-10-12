@@ -1,10 +1,10 @@
 import axios from "axios";
 
 
-export default function GetData() {
+export default async function GetData () {
     const url = `https://picsum.photos/v2/list`
   try {
-    let response = axios.get(url);
+    let response = await axios.get(url);
     return response;
   } catch (error) {
     console.log(`error ${error}`);
