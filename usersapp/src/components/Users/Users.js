@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../Pagination/Pagination";
-import UsersInfo from '../UsersInfo/UsersInfo'
+import UsersInfo from "../UsersInfo/UsersInfo";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import axios from "../../utilities/axios";
 
@@ -12,58 +12,71 @@ function Users() {
   const [load, setLoad] = useState(true);
 
   const [img, setImg] = useState();
-  
+
   const [auth, setAuth] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(20);
 
   useEffect(() => {
     getData();
-  }, []);
-  let storage;
+  }, [currentPage]);
+  // let storage;
   const getData = async () => {
     try {
-      const res = await axios.get(`/v2/list`);
+      const res = await axios.get(`/v2/list?page=${currentPage}&limit=20`);
       setData(res.data);
-      sessionStorage.setItem("str", JSON.stringify(res.data));
-      storage = JSON.parse(sessionStorage.getItem("str"));
-      console.log(typeof storage);
+
+      // sessionStorage.setItem("str", JSON.stringify(res.data));
+      // storage = JSON.parse(sessionStorage.getItem("str"));
+      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
   };
-//   const showInfo =(image,author) =>
-//   {  setInfo(true);
-//     setAuth(author)
-//     setImg(image)
-//     console.log(auth,img)
-// }
+  //   const showInfo =(image,author) =>
+  //   {  setInfo(true);
+  //     setAuth(author)
+  //     setImg(image)
+  //     console.log(auth,img)
+  // }
+  console.log(currentPage);
 
-  const lastPostIndex = currentPage * postsPerPage;
-  const firstPostIndex = lastPostIndex - postsPerPage;
-  const currentPosts = data.slice(firstPostIndex, lastPostIndex);
   const images =
     data &&
-    currentPosts.map(({ id, author, width, height, download_url }, index) => (
+    data.map(({ id, author, width, height, download_url }, index) => (
       <div className="pics" key={id}>
         <img
           src={download_url}
-          style={{ width: "100%", height: id === "1009" ? "300px" : "" , display: load ? "none":''}}
+          style={{
+            width: "100%",
+            height: id === "1009" ? "300px" : "",
+            display: load ? "none" : "",
+          }}
           alt="user"
-          onLoad={()=>{setLoad(false)}}
-          onClick ={()=> {setAuth(author);setImg(download_url);setInfo(true)}}
+          onLoad={() => {
+            setLoad(false);
+          }}
+          onClick={() => {
+            setAuth(author);
+            setImg(download_url);
+            setInfo(true);
+          }}
         ></img>
       </div>
     ));
   return (
-    <div> 
-       
-   { info? <UsersInfo auth={auth} img={img}/>:   <><div className="image-list">{images}</div><Pagination
-        totalPosts={data.length}
-        postsPerPage={postsPerPage}
-        setCurrentPage={setCurrentPage}
-        currentPage={currentPage} /></>}
+    <div>
+      {info ? (
+        <UsersInfo auth={auth} img={img} />
+      ) : (
+        <>
+          <div className="image-list">{images}</div>
+          <Pagination
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+          />
+        </>
+      )}
     </div>
   );
 }
