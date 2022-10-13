@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../Pagination/Pagination";
 import axios from "../../utilities/axios";
+import { useLocation } from "react-router-dom";
 
 import "./Users.css";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 function Users() {
   const [data, setData] = useState([]);
   const [load, setLoad] = useState(true);
+  const location = useLocation();
 
   const navigate = useNavigate();
 
@@ -17,6 +19,8 @@ function Users() {
   useEffect(() => {
     getData();
   }, [currentPage]);
+// console.log(location.state)
+
 
   const getData = async () => {
     try {
