@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "../Pagination/Pagination";
 import axios from "../../utilities/axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import "./Users.css";
 import { useNavigate } from "react-router-dom";
@@ -10,28 +10,22 @@ import { useNavigate } from "react-router-dom";
 function Users() {
   const [data, setData] = useState([]);
   const [load, setLoad] = useState(true);
-  const location = useLocation();
+  const { page } = useParams();
 
   const navigate = useNavigate();
 
-  const [currentPage, setCurrentPage] = useState(1);
-
   useEffect(() => {
     getData();
-  }, [currentPage]);
-// console.log(location.state)
-
+  }, [page]);
 
   const getData = async () => {
     try {
-      const cachedData = JSON.parse(
-        sessionStorage.getItem(`page${currentPage}`)
-      );
+      const cachedData = JSON.parse(sessionStorage.getItem(`page${page}`));
       if (cachedData) {
         setData(cachedData);
       } else {
-        const res = await axios.get(`/v2/list?page=${currentPage}&limit=20`);
-        sessionStorage.setItem(`page${currentPage}`, JSON.stringify(res.data));
+        const res = await axios.get(`/v2/list?page=${page}&limit=20`);
+        sessionStorage.setItem(`page${page}`, JSON.stringify(res.data));
         setData(res.data);
       }
     } catch (error) {
@@ -66,7 +60,7 @@ function Users() {
         <h1 className="title">Users</h1>
 
         <div className="image-list">{images}</div>
-        <Pagination setCurrentPage={setCurrentPage} currentPage={currentPage} />
+        <Pagination currentPage={page} />
       </>
     </div>
   );
