@@ -1,8 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import Pagination from "../Pagination/Pagination";
 import axios from "../../utilities/axios";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import "./Users.css";
 import { useNavigate } from "react-router-dom";
