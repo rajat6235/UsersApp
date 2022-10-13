@@ -1,85 +1,49 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Pagination from "../Pagination/Pagination";
-import UsersInfo from "../UsersInfo/UsersInfo";
 import axios from "../../utilities/axios";
 
 import "./Users.css";
+import { useNavigate } from "react-router-dom";
 
 function Users() {
   const [data, setData] = useState([]);
-  const [info, setInfo] = useState(false);
   const [load, setLoad] = useState(true);
 
-  const [img, setImg] = useState();
+  const navigate = useNavigate();
 
-  const [auth, setAuth] = useState();
-  // const [prevValue, setPrev] = useState();
-
-  const previousInputValue = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-  getData();
+    getData();
   }, [currentPage]);
-
-
-  let storage;
-
-
-
-  useEffect(() => {
-    previousInputValue.current = currentPage;
-    console.log(previousInputValue.current)
-  }, []);
-  
-
-  // console.log( JSON.stringify(previousInputValue) === JSON.stringify(data) )
-
- 
-
 
   const getData = async () => {
     try {
-      const res = await axios.get(`/v2/list?page=${currentPage}&limit=20`);
-if (!storage)
-      {
-        sessionStorage.setItem("str", JSON.stringify(res.data));
-      storage = JSON.parse(sessionStorage.getItem("str"));
-      console.log('runif',storage,data)
-      setData(res.data);
-     console.log('runeif',storage,data)
-    }else
-   { 
-  //    sessionStorage.setItem("str", JSON.stringify(data));
-  //  storage = JSON.parse(sessionStorage.getItem("str")); 
-     setData(res.data)
-     console.log('runelse',storage,data)
-
-  }
-      // console.log(storage,data);
-
+      const cachedData = JSON.parse(
+        sessionStorage.getItem(`page${currentPage}`)
+      );
+      if (cachedData) {
+        setData(cachedData);
+      } else {
+        const res = await axios.get(`/v2/list?page=${currentPage}&limit=20`);
+        sessionStorage.setItem(`page${currentPage}`, JSON.stringify(res.data));
+        setData(res.data);
+      }
     } catch (error) {
       console.log(error);
     }
   };
-  //   const showInfo =(image,author) =>
-  //   {  setInfo(true);
-  //     setAuth(author)
-  //     setImg(image)
-  //     console.log(auth,img)
-  // }
-  // console.log(currentPage); 
 
   const images =
     data &&
-    data.map(({ id, author, width, height, download_url }, index) => (
+    data.map(({ id, author, width, height, download_url, url }, index) => (
       <div className="pics" key={id}>
         <img
           src={download_url}
           style={{
             width: "100%",
-            height: id === "1009" ? "300px" : "",
+            height: id === "1009" ? "300px" : "100%",
             display: load ? "none" : "",
           }}
           alt="user"
@@ -87,26 +51,19 @@ if (!storage)
             setLoad(false);
           }}
           onClick={() => {
-            setAuth(author);
-            setImg(download_url);
-            setInfo(true);
+            navigate(`/info/${id}`, { state: { author, img: download_url } });
           }}
         ></img>
       </div>
     ));
   return (
     <div>
-      {info ? (
-        <UsersInfo auth={auth} img={img} />
-      ) : (
-        <>
-          <div className="image-list">{images}</div>
-          <Pagination
-            setCurrentPage={setCurrentPage}
-            currentPage={currentPage}
-          />
-        </>
-      )}
+      <>
+        <h1 className="title">Users</h1>
+
+        <div className="image-list">{images}</div>
+        <Pagination setCurrentPage={setCurrentPage} currentPage={currentPage} />
+      </>
     </div>
   );
 }

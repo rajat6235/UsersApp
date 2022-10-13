@@ -1,13 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import "./Pagination.css";
 
 function Pagination({ setCurrentPage, currentPage }) {
   let pages = [];
-//   const previousInputValue = useRef(null);
-//   useEffect(() => {
-//     previousInputValue.current = currentPage;
-//     // console.log(previousInputValue.current)
-//   }, [currentPage]);
+
   for (let i = 1; i <= 5; i++) {
     pages.push(i);
   }
@@ -17,8 +13,8 @@ function Pagination({ setCurrentPage, currentPage }) {
         return (
           <button
             key={index}
-            onClick={() => {setCurrentPage(page);
-            // console.log(page,currentPage,previousInputValue)
+            onClick={() => {
+              setCurrentPage(page);
             }}
             className={page === currentPage ? "active" : ""}
           >

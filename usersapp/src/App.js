@@ -1,39 +1,17 @@
-import React from 'react';
-import Users from './components/Users/Users'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-import './App.css';
-import UsersInfo from './components/UsersInfo/UsersInfo';
+import React from "react";
+import Users from "./components/Users/Users";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
+import "./App.css";
+import UsersInfo from "./components/UsersInfo/UsersInfo";
 
 function App() {
-  const routes = [
-    {
-      path: "/UserList",
-      component: Users
-    },
-    {
-    
-      routes: [
-        {
-          path: "/UserList/UserInfo",
-          component: UsersInfo
-        },
-      ]
-    }
-  ];
   return (
-    <Router>
-    <div className="App">
-      <h1 className='title'> Users</h1>
-      <Users/>
-
-
-    </div>
-    </Router>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Users />} />
+        <Route path="/info/:id" element={<UsersInfo />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

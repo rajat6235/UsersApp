@@ -1,13 +1,21 @@
-import React, { useState } from 'react'
-import './UsersInfo.css'
-function UsersInfo({auth,img}) {
-console.log(auth)
-  return (
-    <div className='container'>
+import React from "react";
+import { useLocation } from "react-router-dom";
+import "./UsersInfo.css";
+function UsersInfo() {
+  const location = useLocation();
 
-  {    img ? <><h1 className='name'>{auth}</h1><img className='userImg' src={img} alt={auth}></img></>: ''}
+  return (
+    <div className="container">
+      <>
+        <h1 className="name">{location.state.author}</h1>
+        <img
+          className="userImg"
+          src={location.state.img}
+          alt={location.state.author}
+        ></img>
+      </>
     </div>
-  )
+  );
 }
 
-export default UsersInfo
+export default UsersInfo;
